@@ -1,5 +1,6 @@
 from backend.core.transition import Transition
 from backend.core.pda import PDA
+from backend.core.validator import validate_pda
 
 t1 = Transition("q0", "a", "Z", "q0", "AZ")
 t2 = Transition("q0", "b", "A", "q1", "")
@@ -15,3 +16,4 @@ pda = PDA(
 )
 
 print(pda)
+print(validate_pda(pda))
