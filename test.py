@@ -1,7 +1,9 @@
-from backend.services.json_loader import load_pda_from_json
-from backend.core.validator import validate_pda
+from backend.services.sample_service import list_samples, load_sample
 
-pda = load_pda_from_json("backend/samples/anbn.json")
+print(list_samples())
 
+pda = load_sample("palindrome.json")
 print(pda)
-print(validate_pda(pda))
+
+pda2 = load_sample("parentheses.json")
+print(pda2)
