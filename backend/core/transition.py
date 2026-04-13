@@ -14,3 +14,5 @@ class Transition:
             f"({self.current_state}, {input_display}, {self.stack_top}) "
             f"-> ({self.next_state}, {push_display})"
         )
+    
+    
