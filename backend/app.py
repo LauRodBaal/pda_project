@@ -3,6 +3,7 @@ from flask_cors import CORS
 
 from backend.routes.simulate import simulate_bp
 from backend.routes.render_graph import render_graph_bp
+from backend.routes.load_sample import samples_bp
 
 
 def create_app():
@@ -11,6 +12,7 @@ def create_app():
 
     app.register_blueprint(simulate_bp, url_prefix="/api")
     app.register_blueprint(render_graph_bp, url_prefix="/api")
+    app.register_blueprint(samples_bp, url_prefix="/api")
 
     @app.route("/", methods=["GET"])
     def home():
