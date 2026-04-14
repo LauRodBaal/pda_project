@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 
 from backend.core.simulator import PDASimulator
 from backend.core.trace_formatter import format_simulation_result
+from backend.services.json_loader import build_pda_from_dict
 
 simulate_bp = Blueprint("simulate", __name__)
 
@@ -26,7 +27,8 @@ def simulate_pda():
                 "error": "Falta la definición del PDA."
             }), 400
 
-        simulator = PDASimulator(pda_definition)
+        pda = build_pda_from_dict(pda_definition)
+        simulator = PDASimulator(pda)
         result = simulator.simulate(input_string=input_string)
 
         response = format_simulation_result(result)
@@ -36,4 +38,4 @@ def simulate_pda():
         return jsonify({
             "accepted": False,
             "error": f"Error interno al simular el PDA: {str(e)}"
-        }), 500  
+        }), 500

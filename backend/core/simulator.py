@@ -5,12 +5,12 @@ EPSILON = ""
 
 
 class PDASimulator:
-    def __init__(self, pda_definition: dict):
-        self.pda = pda_definition
-        self.transitions = pda_definition.get("transitions", [])
-        self.start_state = pda_definition.get("start_state")
-        self.start_stack_symbol = pda_definition.get("start_stack_symbol")
-        self.accept_states = set(pda_definition.get("accept_states", []))
+    def __init__(self, pda):
+        self.pda = pda
+        self.transitions = pda.transitions
+        self.start_state = pda.start_state
+        self.start_stack_symbol = pda.start_stack
+        self.accept_states = set(pda.accept_states)
 
     def simulate(self, input_string: str, max_steps: int = 1000) -> dict:
         initial_config = {
@@ -84,11 +84,11 @@ class PDASimulator:
         stack_top = stack[-1] if stack else None
 
         for transition in self.transitions:
-            if transition.get("from_state") != state:
+            if transition.current_state != state:
                 continue
 
-            required_input = transition.get("input_symbol", EPSILON)
-            required_stack_top = transition.get("stack_top")
+            required_input = transition.input_symbol
+            required_stack_top = transition.stack_top
 
             input_matches = (
                 required_input == EPSILON or
@@ -102,24 +102,25 @@ class PDASimulator:
 
         return applicable
 
-    def _apply_transition(self, config: dict, transition: dict, input_string: str) -> dict:
+    def _apply_transition(self, config: dict, transition, input_string: str) -> dict:
         state = config["state"]
         position = config["position"]
         stack_before = deepcopy(config["stack"])
         stack_after = deepcopy(config["stack"])
         trace = deepcopy(config["trace"])
 
-        input_symbol = transition.get("input_symbol", EPSILON)
-        stack_top = transition.get("stack_top")
-        next_state = transition.get("to_state")
-        push_symbols = transition.get("push", [])
+        input_symbol = transition.input_symbol
+        stack_top = transition.stack_top
+        next_state = transition.next_state
+        stack_push = transition.stack_push
 
         popped_symbol = None
         if stack_after and stack_after[-1] == stack_top:
             popped_symbol = stack_after.pop()
 
-        for symbol in reversed(push_symbols):
-            stack_after.append(symbol)
+        if stack_push != EPSILON and stack_push != "":
+            for symbol in reversed(stack_push):
+                stack_after.append(symbol)
 
         next_position = position
         if input_symbol != EPSILON:
@@ -132,7 +133,7 @@ class PDASimulator:
             "consumed": input_symbol if input_symbol != EPSILON else "ε",
             "stack_top_expected": stack_top,
             "popped": popped_symbol,
-            "push": push_symbols,
+            "push": stack_push if stack_push != "" else "ε",
             "position_before": position,
             "position_after": next_position,
             "remaining_input_before": input_string[position:],

@@ -4,10 +4,7 @@ from backend.core.pda import PDA
 from backend.core.transition import Transition
 
 
-def load_pda_from_json(file_path):
-    with open(file_path, "r", encoding="utf-8") as file:
-        data = json.load(file)
-
+def build_pda_from_dict(data):
     transitions = []
     for t in data["transitions"]:
         transition = Transition(
@@ -19,7 +16,7 @@ def load_pda_from_json(file_path):
         )
         transitions.append(transition)
 
-    pda = PDA(
+    return PDA(
         states=data["states"],
         input_alphabet=data["input_alphabet"],
         stack_alphabet=data["stack_alphabet"],
@@ -29,4 +26,9 @@ def load_pda_from_json(file_path):
         accept_states=data["accept_states"]
     )
 
-    return pda
+
+def load_pda_from_json(file_path):
+    with open(file_path, "r", encoding="utf-8") as file:
+        data = json.load(file)
+
+    return build_pda_from_dict(data)

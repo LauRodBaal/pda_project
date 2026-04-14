@@ -1,8 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 
-from routes.simulate import simulate_bp
-
+from backend.routes.simulate import simulate_bp
 
 def create_app():
     app = Flask(__name__)
