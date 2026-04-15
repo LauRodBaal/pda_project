@@ -1,7 +1,10 @@
 from backend.services.json_loader import load_pda_from_json
-from backend.services.graph_renderer import render_pda_graph
+from backend.converters.cfg_converter import convert_pda_to_cfg
 
-pda = load_pda_from_json("backend/samples/anbn.json")
-graph = render_pda_graph(pda)
+samples = ["anbn.json", "palindrome.json", "parentheses.json"]
 
-print(graph)
+for sample in samples:
+    print(f"\n--- Testing CFG conversion for {sample} ---")
+    pda = load_pda_from_json(f"backend/samples/{sample}")
+    cfg = convert_pda_to_cfg(pda)
+    print(cfg)
