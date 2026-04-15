@@ -5,6 +5,7 @@ from backend.routes.simulate import simulate_bp
 from backend.routes.render_graph import render_graph_bp
 from backend.routes.load_sample import samples_bp
 
+
 def create_app():
     app = Flask(__name__)
     CORS(app)
@@ -18,6 +19,7 @@ def create_app():
         return {"message": "PDA Backend running successfully."}, 200
 
     return app
+
 
 app = create_app()
 

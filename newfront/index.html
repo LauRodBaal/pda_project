@@ -6,36 +6,40 @@
   <title>PDA Visualizer</title>
   <style>
     :root {
-      --bg: #0f172a;
+      --bg: #020617;
       --panel: #111827;
-      --panel-2: #1f2937;
+      --panel-2: #1e293b;
       --line: #334155;
       --text: #e5e7eb;
       --muted: #94a3b8;
       --accent: #8b5cf6;
       --accent-2: #22c55e;
-      --danger: #ef4444;
-      --warning: #f59e0b;
+      --danger: #b91c1c;
+      --blue: #60a5fa;
+      --green: #22c55e;
+      --purple: #a78bfa;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(180deg, #0b1020 0%, #111827 100%);
+      background: linear-gradient(180deg, #020617 0%, #06122b 100%);
       color: var(--text);
     }
 
     .page {
-      max-width: 1380px;
+      max-width: 1400px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 24px;
     }
 
     h1 {
       margin: 0 0 8px;
-      font-size: 28px;
+      font-size: 30px;
     }
 
     .subtitle {
@@ -46,24 +50,25 @@
 
     .layout {
       display: grid;
-      grid-template-columns: 420px 1fr;
+      grid-template-columns: 430px 1fr;
       gap: 18px;
       align-items: start;
     }
 
     .panel {
-      background: rgba(17, 24, 39, 0.92);
+      background: rgba(17, 24, 39, 0.94);
       border: 1px solid var(--line);
       border-radius: 18px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
       overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     }
 
     .panel-header {
-      padding: 14px 16px;
+      padding: 16px 18px;
       border-bottom: 1px solid var(--line);
       background: rgba(255,255,255,0.02);
-      font-weight: bold;
+      font-weight: 700;
+      font-size: 18px;
     }
 
     .panel-body {
@@ -92,26 +97,21 @@
       color: #cbd5e1;
     }
 
-    input, select, textarea, button {
+    input, select, button {
       font: inherit;
     }
 
-    input, select, textarea {
+    input, select {
       width: 100%;
       padding: 10px 12px;
-      border-radius: 10px;
+      border-radius: 12px;
       border: 1px solid var(--line);
-      background: #0b1220;
+      background: #020617;
       color: var(--text);
       outline: none;
     }
 
-    textarea {
-      min-height: 78px;
-      resize: vertical;
-    }
-
-    input:focus, select:focus, textarea:focus {
+    input:focus, select:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18);
     }
@@ -125,49 +125,40 @@
 
     button {
       border: none;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-weight: 700;
       cursor: pointer;
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-weight: 600;
       transition: transform .15s ease, opacity .15s ease;
     }
 
-    button:hover { transform: translateY(-1px); }
-    button:disabled { opacity: .6; cursor: not-allowed; transform: none; }
-
-    .primary { background: var(--accent); color: white; }
-    .success { background: var(--accent-2); color: #06210e; }
-    .ghost { background: #243041; color: var(--text); }
-    .danger { background: #7f1d1d; color: #fee2e2; }
-
-    .transition-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 8px;
+    button:hover {
+      transform: translateY(-1px);
     }
 
-    .transition-table th,
-    .transition-table td {
-      border-bottom: 1px solid rgba(148, 163, 184, 0.18);
-      padding: 8px 6px;
-      vertical-align: middle;
-      text-align: left;
-      font-size: 13px;
+    .primary {
+      background: var(--accent);
+      color: white;
     }
 
-    .transition-table th {
-      color: #cbd5e1;
-      font-weight: 600;
+    .success {
+      background: #22c55e;
+      color: #03140a;
     }
 
-    .transition-table input {
-      min-width: 88px;
-      padding: 8px 10px;
+    .ghost {
+      background: #243041;
+      color: white;
+    }
+
+    .danger {
+      background: var(--danger);
+      color: #fee2e2;
     }
 
     .right-grid {
       display: grid;
-      grid-template-columns: 1.35fr .85fr;
+      grid-template-columns: 1.35fr 0.85fr;
       gap: 18px;
     }
 
@@ -178,10 +169,9 @@
 
     .graph-area {
       min-height: 560px;
-      position: relative;
       background:
-        radial-gradient(circle at center, rgba(139, 92, 246, 0.08) 0%, rgba(0,0,0,0) 55%),
-        #0b1220;
+        radial-gradient(circle at center, rgba(139, 92, 246, 0.08) 0%, rgba(0,0,0,0) 58%),
+        #020617;
     }
 
     #graphSvg {
@@ -193,41 +183,107 @@
     .legend {
       display: flex;
       flex-wrap: wrap;
-      gap: 14px;
+      gap: 16px;
       margin-top: 10px;
-      color: var(--muted);
       font-size: 12px;
+      color: var(--muted);
     }
 
     .legend span::before {
       content: "";
+      display: inline-block;
       width: 10px;
       height: 10px;
-      border-radius: 50%;
-      display: inline-block;
       margin-right: 6px;
+      border-radius: 999px;
       vertical-align: middle;
     }
 
-    .legend .normal::before { background: #60a5fa; }
-    .legend .start::before { background: #a78bfa; }
-    .legend .accept::before { background: #22c55e; }
+    .legend .normal::before {
+      background: var(--blue);
+    }
+
+    .legend .start::before {
+      background: var(--purple);
+    }
+
+    .legend .accept::before {
+      background: var(--green);
+    }
+
+    .hint {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .transition-table-wrap {
+      overflow-x: auto;
+      margin-top: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: 12px;
+    }
+
+    .transition-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 940px;
+    }
+
+    .transition-table th,
+    .transition-table td {
+      border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+      padding: 10px 8px;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    .transition-table th {
+      background: rgba(255,255,255,0.02);
+      color: #cbd5e1;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .transition-table td input {
+      min-width: 100px;
+      padding: 8px 10px;
+      border-radius: 10px;
+    }
+
+    .transition-preview {
+      color: #cbd5e1;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .epsilon-chip {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(139, 92, 246, 0.16);
+      color: #ddd6fe;
+      font-size: 11px;
+      font-weight: 700;
+    }
 
     .result-box {
-      min-height: 140px;
+      min-height: 150px;
       border-radius: 14px;
       border: 1px solid rgba(148, 163, 184, 0.18);
       padding: 16px;
-      background: #0b1220;
+      background: #020617;
     }
 
     .result-box.accepted {
-      border-color: rgba(34, 197, 94, 0.5);
+      border-color: rgba(34, 197, 94, 0.45);
       background: rgba(34, 197, 94, 0.12);
     }
 
     .result-box.rejected {
-      border-color: rgba(239, 68, 68, 0.5);
+      border-color: rgba(239, 68, 68, 0.45);
       background: rgba(239, 68, 68, 0.12);
     }
 
@@ -237,8 +293,13 @@
       margin-bottom: 8px;
     }
 
-    .status.accepted { color: #4ade80; }
-    .status.rejected { color: #f87171; }
+    .status.accepted {
+      color: #4ade80;
+    }
+
+    .status.rejected {
+      color: #f87171;
+    }
 
     .small {
       color: var(--muted);
@@ -265,13 +326,7 @@
       margin-top: 10px;
       color: #fcd34d;
       font-size: 13px;
-    }
-
-    .hint {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.45;
+      line-height: 1.4;
     }
 
     @media (max-width: 1100px) {
@@ -307,63 +362,76 @@
               <label for="sampleSelect">Sample PDA</label>
               <div class="btn-row">
                 <select id="sampleSelect">
-                  <option value="">Select a sample…</option>
+                  <option value="">Select a sample...</option>
                 </select>
                 <button class="ghost" id="loadSamplesBtn" type="button">Load Samples</button>
+                <button class="ghost" id="fillExampleBtn" type="button">Quick Example</button>
               </div>
             </div>
 
             <div class="field">
               <label for="states">States</label>
-              <input id="states" value="q0,q1,q2" />
+              <input id="states" value="q0,q1" />
             </div>
+
             <div class="field">
               <label for="inputAlphabet">Input Alphabet</label>
-              <input id="inputAlphabet" value="a,b" />
+              <input id="inputAlphabet" value="(,)" />
             </div>
+
             <div class="field">
               <label for="stackAlphabet">Stack Alphabet</label>
-              <input id="stackAlphabet" value="Z,A,B" />
+              <input id="stackAlphabet" value="Z,(" />
             </div>
+
             <div class="field">
               <label for="startState">Start State</label>
               <input id="startState" value="q0" />
             </div>
+
             <div class="field">
               <label for="startStack">Start Stack Symbol</label>
               <input id="startStack" value="Z" />
             </div>
+
             <div class="field">
               <label for="acceptStates">Accept States</label>
-              <input id="acceptStates" value="q2" />
+              <input id="acceptStates" value="q1" />
             </div>
           </div>
 
           <div class="field full">
             <label>Transitions</label>
-            <table class="transition-table" id="transitionTable">
-              <thead>
-                <tr>
-                  <th>Current</th>
-                  <th>Input</th>
-                  <th>Stack Top</th>
-                  <th>Next</th>
-                  <th>Push</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="transitionBody"></tbody>
-            </table>
-            <div class="btn-row">
-              <button class="ghost" type="button" id="addTransitionBtn">+ Add Transition</button>
-              <button class="danger" type="button" id="clearTransitionsBtn">Clear</button>
+            <div class="transition-table-wrap">
+              <table class="transition-table">
+                <thead>
+                  <tr>
+                    <th>Current</th>
+                    <th>Input</th>
+                    <th>Stack Top</th>
+                    <th>Next</th>
+                    <th>Push</th>
+                    <th>Preview</th>
+                    <th>Remove</th>
+                  </tr>
+                </thead>
+                <tbody id="transitionBody"></tbody>
+              </table>
             </div>
-            <div class="hint">Use an empty input symbol or push value for ε transitions.</div>
+
+            <div class="btn-row">
+              <button class="ghost" id="addTransitionBtn" type="button">+ Add Transition</button>
+              <button class="danger" id="clearTransitionsBtn" type="button">Clear</button>
+            </div>
+
+            <div class="hint">
+              Leave Input empty to represent <strong>ε</strong>.
+              Leave Push empty to represent <strong>ε</strong>.
+            </div>
           </div>
 
           <div class="btn-row">
             <button class="primary" id="renderBtn" type="button">Render Graph</button>
-            <button class="ghost" id="fillExampleBtn" type="button">Load Quick Example</button>
           </div>
         </div>
       </section>
@@ -379,12 +447,16 @@
                 </marker>
               </defs>
             </svg>
+
             <div class="legend">
               <span class="normal">Normal state</span>
               <span class="start">Start state</span>
               <span class="accept">Accept state</span>
             </div>
-            <div class="hint">This graph is drawn directly with SVG, so you do not need React or an external graph library.</div>
+
+            <div class="hint">
+              This graph is drawn directly with SVG.
+            </div>
           </div>
         </div>
 
@@ -394,12 +466,16 @@
             <div class="panel-body">
               <div class="field">
                 <label for="inputString">Input String</label>
-                <input id="inputString" value="abba" />
+                <input id="inputString" value="(())(())" />
               </div>
+
               <div class="btn-row">
                 <button class="success" id="simulateBtn" type="button">Run</button>
               </div>
-              <div class="hint">This sends the whole PDA definition plus the input string to your backend.</div>
+
+              <div class="hint">
+                This sends the whole PDA definition plus the input string to your backend.
+              </div>
             </div>
           </div>
 
@@ -419,126 +495,198 @@
   </div>
 
   <script>
-    const transitionBody = document.getElementById('transitionBody');
-    const graphSvg = document.getElementById('graphSvg');
-    const resultBox = document.getElementById('resultBox');
-    const messageBox = document.getElementById('message');
+    const transitionBody = document.getElementById("transitionBody");
+    const graphSvg = document.getElementById("graphSvg");
+    const resultBox = document.getElementById("resultBox");
+    const messageBox = document.getElementById("message");
 
-    function createTransitionRow(values = {}) {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><input data-key="current_state" value="${values.current_state ?? ''}" placeholder="q0" /></td>
-        <td><input data-key="input_symbol" value="${values.input_symbol ?? ''}" placeholder="a or empty" /></td>
-        <td><input data-key="stack_top" value="${values.stack_top ?? ''}" placeholder="Z" /></td>
-        <td><input data-key="next_state" value="${values.next_state ?? ''}" placeholder="q1" /></td>
-        <td><input data-key="stack_push" value="${values.stack_push ?? ''}" placeholder="AZ or empty" /></td>
-        <td><button class="danger" type="button">×</button></td>
-      `;
+    function normalizeSymbol(value) {
+      if (value === null || value === undefined) return "";
+      const text = String(value).trim();
+      if (text === "ε" || text.toLowerCase() === "epsilon") return "";
+      return text;
+    }
 
-      tr.querySelector('button').addEventListener('click', () => tr.remove());
-      transitionBody.appendChild(tr);
+    function displaySymbol(value) {
+      const normalized = normalizeSymbol(value);
+      return normalized === "" ? "ε" : normalized;
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
 
     function parseCsv(value) {
-      return value
-        .split(',')
+      return String(value)
+        .split(",")
         .map(v => v.trim())
         .filter(Boolean);
     }
 
+    function updateTransitionPreview(row) {
+      const current = row.querySelector('[data-key="current_state"]').value.trim() || "?";
+      const input = displaySymbol(row.querySelector('[data-key="input_symbol"]').value);
+      const stackTop = displaySymbol(row.querySelector('[data-key="stack_top"]').value);
+      const next = row.querySelector('[data-key="next_state"]').value.trim() || "?";
+      const push = displaySymbol(row.querySelector('[data-key="stack_push"]').value);
+
+      const previewCell = row.querySelector(".transition-preview");
+      previewCell.textContent = "(" + current + ", " + input + ", " + stackTop + ") → (" + next + ", " + push + ")";
+    }
+
+    function createTransitionRow(values = {}) {
+      const row = document.createElement("tr");
+
+      row.innerHTML =
+        '<td><input data-key="current_state" placeholder="q0"></td>' +
+        '<td><input data-key="input_symbol" placeholder="ε"></td>' +
+        '<td><input data-key="stack_top" placeholder="Z"></td>' +
+        '<td><input data-key="next_state" placeholder="q1"></td>' +
+        '<td><input data-key="stack_push" placeholder="ε"></td>' +
+        '<td class="transition-preview"></td>' +
+        '<td><button class="danger" type="button">×</button></td>';
+
+      row.querySelector('[data-key="current_state"]').value = values.current_state || "";
+      row.querySelector('[data-key="input_symbol"]').value = normalizeSymbol(values.input_symbol || "");
+      row.querySelector('[data-key="stack_top"]').value = values.stack_top || "";
+      row.querySelector('[data-key="next_state"]').value = values.next_state || "";
+      row.querySelector('[data-key="stack_push"]').value = normalizeSymbol(values.stack_push || "");
+
+      row.querySelector("button").addEventListener("click", function () {
+        row.remove();
+      });
+
+      row.querySelectorAll("input").forEach(function (input) {
+        input.addEventListener("input", function () {
+          updateTransitionPreview(row);
+        });
+      });
+
+      transitionBody.appendChild(row);
+      updateTransitionPreview(row);
+    }
+
     function getPDAFromForm() {
-      const transitions = [...transitionBody.querySelectorAll('tr')].map(tr => {
-        const inputs = [...tr.querySelectorAll('input')];
-        const transition = {};
-        for (const input of inputs) {
-          transition[input.dataset.key] = input.value.trim();
+      const transitions = [];
+
+      transitionBody.querySelectorAll("tr").forEach(function (row) {
+        const transition = {
+          current_state: row.querySelector('[data-key="current_state"]').value.trim(),
+          input_symbol: normalizeSymbol(row.querySelector('[data-key="input_symbol"]').value),
+          stack_top: row.querySelector('[data-key="stack_top"]').value.trim(),
+          next_state: row.querySelector('[data-key="next_state"]').value.trim(),
+          stack_push: normalizeSymbol(row.querySelector('[data-key="stack_push"]').value)
+        };
+
+        if (transition.current_state && transition.next_state && transition.stack_top) {
+          transitions.push(transition);
         }
-        return transition;
-      }).filter(t => t.current_state && t.stack_top && t.next_state);
+      });
 
       return {
-        states: parseCsv(document.getElementById('states').value),
-        input_alphabet: parseCsv(document.getElementById('inputAlphabet').value),
-        stack_alphabet: parseCsv(document.getElementById('stackAlphabet').value),
-        start_state: document.getElementById('startState').value.trim(),
-        start_stack: document.getElementById('startStack').value.trim(),
-        accept_states: parseCsv(document.getElementById('acceptStates').value),
-        transitions
+        states: parseCsv(document.getElementById("states").value),
+        input_alphabet: parseCsv(document.getElementById("inputAlphabet").value),
+        stack_alphabet: parseCsv(document.getElementById("stackAlphabet").value),
+        start_state: document.getElementById("startState").value.trim(),
+        start_stack: document.getElementById("startStack").value.trim(),
+        accept_states: parseCsv(document.getElementById("acceptStates").value),
+        transitions: transitions
       };
     }
 
     function setPDAForm(pda) {
-      document.getElementById('states').value = (pda.states || []).join(',');
-      document.getElementById('inputAlphabet').value = (pda.input_alphabet || []).join(',');
-      document.getElementById('stackAlphabet').value = (pda.stack_alphabet || []).join(',');
-      document.getElementById('startState').value = pda.start_state || '';
-      document.getElementById('startStack').value = pda.start_stack || '';
-      document.getElementById('acceptStates').value = (pda.accept_states || []).join(',');
-      transitionBody.innerHTML = '';
-      (pda.transitions || []).forEach(createTransitionRow);
+      document.getElementById("states").value = (pda.states || []).join(",");
+      document.getElementById("inputAlphabet").value = (pda.input_alphabet || []).join(",");
+      document.getElementById("stackAlphabet").value = (pda.stack_alphabet || []).join(",");
+      document.getElementById("startState").value = pda.start_state || "";
+      document.getElementById("startStack").value = pda.start_stack || "";
+      document.getElementById("acceptStates").value = (pda.accept_states || []).join(",");
+
+      transitionBody.innerHTML = "";
+
+      (pda.transitions || []).forEach(function (transition) {
+        createTransitionRow({
+          current_state: transition.current_state,
+          input_symbol: transition.input_symbol,
+          stack_top: transition.stack_top,
+          next_state: transition.next_state,
+          stack_push: transition.stack_push
+        });
+      });
     }
 
-    function setResult(state, details = '', trace = [], extraMessage = '') {
-      resultBox.className = 'result-box';
-      let title = 'Ready';
-      let titleClass = '';
+    function setResult(state, details, trace, extraMessage) {
+      resultBox.className = "result-box";
 
-      if (state === 'accepted') {
-        resultBox.classList.add('accepted');
-        title = 'ACCEPTED';
-        titleClass = 'accepted';
-      } else if (state === 'rejected') {
-        resultBox.classList.add('rejected');
-        title = 'REJECTED';
-        titleClass = 'rejected';
+      let title = "Ready";
+      let titleClass = "";
+
+      if (state === "accepted") {
+        resultBox.classList.add("accepted");
+        title = "ACCEPTED";
+        titleClass = "accepted";
+      } else if (state === "rejected") {
+        resultBox.classList.add("rejected");
+        title = "REJECTED";
+        titleClass = "rejected";
       }
 
-      const traceHtml = trace.length
-        ? `<div class="trace">${trace.map(step => `<span class="trace-step">${escapeHtml(String(step))}</span>`).join('')}</div>`
-        : '';
+      const safeDetails = details || "No additional details.";
+      const safeTrace = Array.isArray(trace) ? trace : [];
+      const safeMessage = extraMessage || "";
 
-      resultBox.innerHTML = `
-        <div class="status ${titleClass}">${title}</div>
-        <div class="small">${details || 'No additional details.'}</div>
-        ${traceHtml}
-      `;
+      let html =
+        '<div class="status ' + titleClass + '">' + escapeHtml(title) + "</div>" +
+        '<div class="small">' + escapeHtml(safeDetails) + "</div>";
 
-      messageBox.textContent = extraMessage || '';
-    }
+      if (safeTrace.length > 0) {
+        html += '<div class="trace">';
+        safeTrace.forEach(function (step) {
+          html += '<span class="trace-step">' + escapeHtml(step) + "</span>";
+        });
+        html += "</div>";
+      }
 
-    function escapeHtml(value) {
-      return value
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
+      resultBox.innerHTML = html;
+      messageBox.textContent = safeMessage;
     }
 
     async function postJson(path, payload) {
-      const base = document.getElementById('apiBase').value.trim().replace(/\/$/, '');
-      const response = await fetch(`${base}${path}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const base = document.getElementById("apiBase").value.trim().replace(/\/$/, "");
+      const response = await fetch(base + path, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
 
       const data = await response.json();
+
       if (!response.ok) {
-        throw new Error(data.error || 'Request failed');
+        throw new Error(data.error || "Request failed");
       }
+
       return data;
     }
 
     async function loadSamples() {
-      const base = document.getElementById('apiBase').value.trim().replace(/\/$/, '');
-      const response = await fetch(`${base}/samples`);
+      const base = document.getElementById("apiBase").value.trim().replace(/\/$/, "");
+      const response = await fetch(base + "/samples");
       const data = await response.json();
-      const select = document.getElementById('sampleSelect');
-      select.innerHTML = '<option value="">Select a sample…</option>';
 
-      (data.samples || []).forEach(name => {
-        const option = document.createElement('option');
+      if (!response.ok) {
+        throw new Error(data.error || "Could not load samples");
+      }
+
+      const select = document.getElementById("sampleSelect");
+      select.innerHTML = '<option value="">Select a sample...</option>';
+
+      (data.samples || []).forEach(function (name) {
+        const option = document.createElement("option");
         option.value = name;
         option.textContent = name;
         select.appendChild(option);
@@ -546,30 +694,29 @@
     }
 
     async function loadSelectedSample() {
-      const name = document.getElementById('sampleSelect').value;
+      const name = document.getElementById("sampleSelect").value;
       if (!name) return;
 
-      const base = document.getElementById('apiBase').value.trim().replace(/\/$/, '');
-      const response = await fetch(`${base}/samples/${encodeURIComponent(name)}`);
+      const base = document.getElementById("apiBase").value.trim().replace(/\/$/, "");
+      const response = await fetch(base + "/samples/" + encodeURIComponent(name));
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Could not load sample');
+        throw new Error(data.error || "Could not load sample");
       }
 
       setPDAForm(data.pda);
-      setResult('ready', 'Sample loaded into the builder.');
+      await renderGraph();
+      setResult("ready", 'Sample "' + name + '" loaded successfully.', [], "");
     }
 
     function drawGraph(graph) {
-      const svg = graphSvg;
-      svg.innerHTML = `
-        <defs>
-          <marker id="arrowHead" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="#93c5fd"></path>
-          </marker>
-        </defs>
-      `;
+      graphSvg.innerHTML =
+        '<defs>' +
+        '  <marker id="arrowHead" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">' +
+        '    <path d="M 0 0 L 10 5 L 0 10 z" fill="#93c5fd"></path>' +
+        "  </marker>" +
+        "</defs>";
 
       const nodes = graph.nodes || [];
       const edges = graph.edges || [];
@@ -583,7 +730,7 @@
       const radius = Math.min(200, 70 + nodes.length * 18);
       const positions = {};
 
-      nodes.forEach((node, index) => {
+      nodes.forEach(function (node, index) {
         const angle = (Math.PI * 2 * index / nodes.length) - Math.PI / 2;
         positions[node.id] = {
           x: cx + radius * Math.cos(angle),
@@ -591,28 +738,34 @@
         };
       });
 
-      edges.forEach((edge, index) => {
+      edges.forEach(function (edge, index) {
         const from = positions[edge.from];
         const to = positions[edge.to];
         if (!from || !to) return;
 
-        if (edge.from === edge.to) {
-          const loop = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-          const d = `M ${from.x} ${from.y - 34} C ${from.x + 42} ${from.y - 88}, ${from.x - 42} ${from.y - 88}, ${from.x} ${from.y - 34}`;
-          loop.setAttribute('d', d);
-          loop.setAttribute('fill', 'none');
-          loop.setAttribute('stroke', '#93c5fd');
-          loop.setAttribute('stroke-width', '2');
-          svg.appendChild(loop);
+        const labelText = String(edge.label || "").replace(/epsilon/gi, "ε");
 
-          const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          label.setAttribute('x', from.x);
-          label.setAttribute('y', from.y - 92);
-          label.setAttribute('fill', '#e2e8f0');
-          label.setAttribute('font-size', '12');
-          label.setAttribute('text-anchor', 'middle');
-          label.textContent = edge.label;
-          svg.appendChild(label);
+        if (edge.from === edge.to) {
+          const loop = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          const d = "M " + from.x + " " + (from.y - 34) +
+                    " C " + (from.x + 42) + " " + (from.y - 88) +
+                    ", " + (from.x - 42) + " " + (from.y - 88) +
+                    ", " + from.x + " " + (from.y - 34);
+
+          loop.setAttribute("d", d);
+          loop.setAttribute("fill", "none");
+          loop.setAttribute("stroke", "#93c5fd");
+          loop.setAttribute("stroke-width", "2");
+          graphSvg.appendChild(loop);
+
+          const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          label.setAttribute("x", from.x);
+          label.setAttribute("y", from.y - 92);
+          label.setAttribute("fill", "#e2e8f0");
+          label.setAttribute("font-size", "12");
+          label.setAttribute("text-anchor", "middle");
+          label.textContent = labelText;
+          graphSvg.appendChild(label);
           return;
         }
 
@@ -626,7 +779,7 @@
         const endX = to.x - nx * 30;
         const endY = to.y - ny * 30;
 
-        const curveOffset = ((index % 2 === 0) ? 18 : -18);
+        const curveOffset = (index % 2 === 0) ? 18 : -18;
         const mx = (startX + endX) / 2;
         const my = (startY + endY) / 2;
         const perpX = -ny;
@@ -634,138 +787,158 @@
         const cx1 = mx + perpX * curveOffset;
         const cy1 = my + perpY * curveOffset;
 
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', `M ${startX} ${startY} Q ${cx1} ${cy1} ${endX} ${endY}`);
-        path.setAttribute('fill', 'none');
-        path.setAttribute('stroke', '#93c5fd');
-        path.setAttribute('stroke-width', '2');
-        path.setAttribute('marker-end', 'url(#arrowHead)');
-        svg.appendChild(path);
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", "M " + startX + " " + startY + " Q " + cx1 + " " + cy1 + " " + endX + " " + endY);
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke", "#93c5fd");
+        path.setAttribute("stroke-width", "2");
+        path.setAttribute("marker-end", "url(#arrowHead)");
+        graphSvg.appendChild(path);
 
-        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        label.setAttribute('x', cx1);
-        label.setAttribute('y', cy1 - 8);
-        label.setAttribute('fill', '#e2e8f0');
-        label.setAttribute('font-size', '12');
-        label.setAttribute('text-anchor', 'middle');
-        label.textContent = edge.label;
-        svg.appendChild(label);
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", cx1);
+        label.setAttribute("y", cy1 - 8);
+        label.setAttribute("fill", "#e2e8f0");
+        label.setAttribute("font-size", "12");
+        label.setAttribute("text-anchor", "middle");
+        label.textContent = labelText;
+        graphSvg.appendChild(label);
       });
 
-      nodes.forEach(node => {
+      nodes.forEach(function (node) {
         const pos = positions[node.id];
-        const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
         if (node.start) {
-          const startArrow = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-          startArrow.setAttribute('x1', pos.x - 64);
-          startArrow.setAttribute('y1', pos.y);
-          startArrow.setAttribute('x2', pos.x - 30);
-          startArrow.setAttribute('y2', pos.y);
-          startArrow.setAttribute('stroke', '#c4b5fd');
-          startArrow.setAttribute('stroke-width', '3');
-          startArrow.setAttribute('marker-end', 'url(#arrowHead)');
-          svg.appendChild(startArrow);
+          const startArrow = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          startArrow.setAttribute("x1", pos.x - 64);
+          startArrow.setAttribute("y1", pos.y);
+          startArrow.setAttribute("x2", pos.x - 30);
+          startArrow.setAttribute("y2", pos.y);
+          startArrow.setAttribute("stroke", "#c4b5fd");
+          startArrow.setAttribute("stroke-width", "3");
+          startArrow.setAttribute("marker-end", "url(#arrowHead)");
+          graphSvg.appendChild(startArrow);
         }
 
-        const outer = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        outer.setAttribute('cx', pos.x);
-        outer.setAttribute('cy', pos.y);
-        outer.setAttribute('r', 28);
-        outer.setAttribute('fill', node.accept ? 'rgba(34, 197, 94, 0.15)' : node.start ? 'rgba(139, 92, 246, 0.18)' : 'rgba(96, 165, 250, 0.15)');
-        outer.setAttribute('stroke', node.accept ? '#22c55e' : node.start ? '#a78bfa' : '#60a5fa');
-        outer.setAttribute('stroke-width', '3');
+        const outer = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        outer.setAttribute("cx", pos.x);
+        outer.setAttribute("cy", pos.y);
+        outer.setAttribute("r", 28);
+        outer.setAttribute("fill", node.accept ? "rgba(34, 197, 94, 0.15)" : (node.start ? "rgba(139, 92, 246, 0.18)" : "rgba(96, 165, 250, 0.15)"));
+        outer.setAttribute("stroke", node.accept ? "#22c55e" : (node.start ? "#a78bfa" : "#60a5fa"));
+        outer.setAttribute("stroke-width", "3");
         group.appendChild(outer);
 
         if (node.accept) {
-          const inner = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-          inner.setAttribute('cx', pos.x);
-          inner.setAttribute('cy', pos.y);
-          inner.setAttribute('r', 21);
-          inner.setAttribute('fill', 'none');
-          inner.setAttribute('stroke', '#22c55e');
-          inner.setAttribute('stroke-width', '2');
+          const inner = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          inner.setAttribute("cx", pos.x);
+          inner.setAttribute("cy", pos.y);
+          inner.setAttribute("r", 21);
+          inner.setAttribute("fill", "none");
+          inner.setAttribute("stroke", "#22c55e");
+          inner.setAttribute("stroke-width", "2");
           group.appendChild(inner);
         }
 
-        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        text.setAttribute('x', pos.x);
-        text.setAttribute('y', pos.y + 4);
-        text.setAttribute('fill', '#f8fafc');
-        text.setAttribute('font-size', '14');
-        text.setAttribute('font-weight', '700');
-        text.setAttribute('text-anchor', 'middle');
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", pos.x);
+        text.setAttribute("y", pos.y + 4);
+        text.setAttribute("fill", "#f8fafc");
+        text.setAttribute("font-size", "14");
+        text.setAttribute("font-weight", "700");
+        text.setAttribute("text-anchor", "middle");
         text.textContent = node.label;
         group.appendChild(text);
 
-        svg.appendChild(group);
+        graphSvg.appendChild(group);
       });
     }
 
     async function renderGraph() {
       try {
         const pda = getPDAFromForm();
-        const graph = await postJson('/render-graph', { pda });
+        const graph = await postJson("/render-graph", { pda: pda });
         drawGraph(graph);
-        setResult('ready', 'Graph rendered successfully.');
+        setResult("ready", "Graph rendered successfully.", [], "");
       } catch (error) {
-        setResult('rejected', 'Could not render the graph.', [], error.message);
+        setResult("rejected", "Could not render the graph.", [], error.message);
       }
     }
 
     async function simulatePDA() {
       try {
         const pda = getPDAFromForm();
-        const input_string = document.getElementById('inputString').value;
-        const data = await postJson('/simulate', { pda, input_string });
+        const inputString = document.getElementById("inputString").value;
+
+        const data = await postJson("/simulate", {
+          pda: pda,
+          input_string: inputString
+        });
 
         const accepted = Boolean(data.accepted);
-        const trace = Array.isArray(data.trace)
-          ? data.trace
-          : Array.isArray(data.formatted_trace)
-            ? data.formatted_trace
-            : Array.isArray(data.steps)
-              ? data.steps
-              : [];
+        let trace = [];
+
+        if (Array.isArray(data.formatted_trace)) {
+          trace = data.formatted_trace.map(function (step) {
+            return (typeof step === "string") ? step : JSON.stringify(step);
+          });
+        } else if (Array.isArray(data.trace)) {
+          trace = data.trace.map(function (step) {
+            return (typeof step === "string") ? step : JSON.stringify(step);
+          });
+        } else if (Array.isArray(data.steps)) {
+          trace = data.steps.map(function (step) {
+            return (typeof step === "string") ? step : JSON.stringify(step);
+          });
+        }
 
         setResult(
-          accepted ? 'accepted' : 'rejected',
-          accepted ? 'The backend accepted the input string.' : 'The backend rejected the input string.',
+          accepted ? "accepted" : "rejected",
+          accepted ? "The backend accepted the input string." : "The backend rejected the input string.",
           trace,
-          data.error || ''
+          data.error || ""
         );
       } catch (error) {
-        setResult('rejected', 'Simulation failed.', [], error.message);
+        setResult("rejected", "Simulation failed.", [], error.message);
       }
     }
 
     function fillQuickExample() {
       setPDAForm({
-        states: ['q0', 'q1', 'q2'],
-        input_alphabet: ['a', 'b'],
-        stack_alphabet: ['Z', 'A'],
-        start_state: 'q0',
-        start_stack: 'Z',
-        accept_states: ['q2'],
+        states: ["q0", "q1"],
+        input_alphabet: ["(", ")"],
+        stack_alphabet: ["Z", "("],
+        start_state: "q0",
+        start_stack: "Z",
+        accept_states: ["q1"],
         transitions: [
-          { current_state: 'q0', input_symbol: 'a', stack_top: 'Z', next_state: 'q0', stack_push: 'AZ' },
-          { current_state: 'q0', input_symbol: 'a', stack_top: 'A', next_state: 'q0', stack_push: 'AA' },
-          { current_state: 'q0', input_symbol: 'b', stack_top: 'A', next_state: 'q1', stack_push: '' },
-          { current_state: 'q1', input_symbol: 'b', stack_top: 'A', next_state: 'q1', stack_push: '' },
-          { current_state: 'q1', input_symbol: '', stack_top: 'Z', next_state: 'q2', stack_push: 'Z' }
+          { current_state: "q0", input_symbol: "(", stack_top: "Z", next_state: "q0", stack_push: "(Z" },
+          { current_state: "q0", input_symbol: "(", stack_top: "(", next_state: "q0", stack_push: "((" },
+          { current_state: "q0", input_symbol: ")", stack_top: "(", next_state: "q0", stack_push: "" },
+          { current_state: "q0", input_symbol: "", stack_top: "Z", next_state: "q1", stack_push: "Z" }
         ]
       });
-      document.getElementById('inputString').value = 'aabb';
-      setResult('ready', 'Quick example loaded.');
+
+      document.getElementById("inputString").value = "(())(())";
+      renderGraph();
+      setResult("ready", "Quick example loaded.", [], "");
     }
 
-    document.getElementById('addTransitionBtn').addEventListener('click', () => createTransitionRow());
-    document.getElementById('clearTransitionsBtn').addEventListener('click', () => transitionBody.innerHTML = '');
-    document.getElementById('renderBtn').addEventListener('click', renderGraph);
-    document.getElementById('simulateBtn').addEventListener('click', simulatePDA);
-    document.getElementById('fillExampleBtn').addEventListener('click', fillQuickExample);
-    document.getElementById('loadSamplesBtn').addEventListener('click', loadSamples);
-    document.getElementById('sampleSelect').addEventListener('change', async () => {
+    document.getElementById("addTransitionBtn").addEventListener("click", function () {
+      createTransitionRow({});
+    });
+
+    document.getElementById("clearTransitionsBtn").addEventListener("click", function () {
+      transitionBody.innerHTML = "";
+    });
+
+    document.getElementById("renderBtn").addEventListener("click", renderGraph);
+    document.getElementById("simulateBtn").addEventListener("click", simulatePDA);
+    document.getElementById("fillExampleBtn").addEventListener("click", fillQuickExample);
+    document.getElementById("loadSamplesBtn").addEventListener("click", loadSamples);
+
+    document.getElementById("sampleSelect").addEventListener("change", async function () {
       try {
         await loadSelectedSample();
       } catch (error) {
@@ -773,9 +946,11 @@
       }
     });
 
-    createTransitionRow({ current_state: 'q0', input_symbol: 'a', stack_top: 'Z', next_state: 'q0', stack_push: 'AZ' });
-    createTransitionRow({ current_state: 'q0', input_symbol: 'b', stack_top: 'A', next_state: 'q1', stack_push: '' });
-    createTransitionRow({ current_state: 'q1', input_symbol: '', stack_top: 'Z', next_state: 'q2', stack_push: 'Z' });
+    createTransitionRow({ current_state: "q0", input_symbol: "(", stack_top: "Z", next_state: "q0", stack_push: "(Z" });
+    createTransitionRow({ current_state: "q0", input_symbol: "(", stack_top: "(", next_state: "q0", stack_push: "((" });
+    createTransitionRow({ current_state: "q0", input_symbol: ")", stack_top: "(", next_state: "q0", stack_push: "" });
+    createTransitionRow({ current_state: "q0", input_symbol: "", stack_top: "Z", next_state: "q1", stack_push: "Z" });
+
     drawGraph({ nodes: [], edges: [] });
   </script>
 </body>

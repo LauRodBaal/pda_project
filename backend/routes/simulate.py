@@ -1,5 +1,4 @@
 from flask import Blueprint, jsonify, request
-
 from backend.core.simulator import PDASimulator
 from backend.core.trace_formatter import format_simulation_result
 from backend.services.json_loader import build_pda_from_dict
@@ -30,8 +29,8 @@ def simulate_pda():
         pda = build_pda_from_dict(pda_definition)
         simulator = PDASimulator(pda)
         result = simulator.simulate(input_string=input_string)
-
         response = format_simulation_result(result)
+
         return jsonify(response), 200
 
     except Exception as e:
