@@ -8,7 +8,6 @@
     :root {
       --bg: #020617;
       --panel: #111827;
-      --panel-2: #1e293b;
       --line: #334155;
       --text: #e5e7eb;
       --muted: #94a3b8;
@@ -32,7 +31,7 @@
     }
 
     .page {
-      max-width: 1400px;
+      max-width: 1500px;
       margin: 0 auto;
       padding: 24px;
     }
@@ -50,17 +49,17 @@
 
     .layout {
       display: grid;
-      grid-template-columns: 430px 1fr;
+      grid-template-columns: 460px 1fr;
       gap: 18px;
       align-items: start;
     }
 
     .panel {
-      background: rgba(17, 24, 39, 0.94);
+      background: rgba(17, 24, 39, 0.95);
       border: 1px solid var(--line);
       border-radius: 18px;
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.24);
     }
 
     .panel-header {
@@ -158,7 +157,7 @@
 
     .right-grid {
       display: grid;
-      grid-template-columns: 1.35fr 0.85fr;
+      grid-template-columns: 1.1fr 0.95fr;
       gap: 18px;
     }
 
@@ -199,17 +198,9 @@
       vertical-align: middle;
     }
 
-    .legend .normal::before {
-      background: var(--blue);
-    }
-
-    .legend .start::before {
-      background: var(--purple);
-    }
-
-    .legend .accept::before {
-      background: var(--green);
-    }
+    .legend .normal::before { background: var(--blue); }
+    .legend .start::before { background: var(--purple); }
+    .legend .accept::before { background: var(--green); }
 
     .hint {
       margin-top: 8px;
@@ -218,36 +209,41 @@
       line-height: 1.5;
     }
 
-    .transition-table-wrap {
+    .transition-table-wrap,
+    .table-wrap {
       overflow-x: auto;
       margin-top: 8px;
       border: 1px solid rgba(148, 163, 184, 0.15);
       border-radius: 12px;
     }
 
-    .transition-table {
+    .transition-table,
+    .trace-table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 940px;
+      min-width: 920px;
     }
 
     .transition-table th,
-    .transition-table td {
+    .transition-table td,
+    .trace-table th,
+    .trace-table td {
       border-bottom: 1px solid rgba(148, 163, 184, 0.15);
       padding: 10px 8px;
       text-align: left;
       vertical-align: middle;
+      font-size: 13px;
     }
 
-    .transition-table th {
+    .transition-table th,
+    .trace-table th {
       background: rgba(255,255,255,0.02);
       color: #cbd5e1;
-      font-size: 13px;
       font-weight: 700;
     }
 
     .transition-table td input {
-      min-width: 100px;
+      min-width: 95px;
       padding: 8px 10px;
       border-radius: 10px;
     }
@@ -258,15 +254,16 @@
       white-space: nowrap;
     }
 
-    .epsilon-chip {
-      display: inline-block;
-      margin-left: 6px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: rgba(139, 92, 246, 0.16);
-      color: #ddd6fe;
-      font-size: 11px;
-      font-weight: 700;
+    .mono {
+      font-family: Consolas, Monaco, monospace;
+      font-size: 12px;
+      color: #e2e8f0;
+    }
+
+    .empty-state {
+      color: var(--muted);
+      font-size: 13px;
+      padding: 14px;
     }
 
     .result-box {
@@ -293,33 +290,13 @@
       margin-bottom: 8px;
     }
 
-    .status.accepted {
-      color: #4ade80;
-    }
-
-    .status.rejected {
-      color: #f87171;
-    }
+    .status.accepted { color: #4ade80; }
+    .status.rejected { color: #f87171; }
 
     .small {
       color: var(--muted);
       font-size: 13px;
       line-height: 1.5;
-    }
-
-    .trace {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 14px;
-    }
-
-    .trace-step {
-      background: #1e293b;
-      border: 1px solid rgba(148, 163, 184, 0.18);
-      padding: 7px 10px;
-      border-radius: 999px;
-      font-size: 12px;
     }
 
     .message {
@@ -401,7 +378,7 @@
           </div>
 
           <div class="field full">
-            <label>Transitions</label>
+            <label>Transition Table</label>
             <div class="transition-table-wrap">
               <table class="transition-table">
                 <thead>
@@ -425,8 +402,7 @@
             </div>
 
             <div class="hint">
-              Leave Input empty to represent <strong>ε</strong>.
-              Leave Push empty to represent <strong>ε</strong>.
+              This is the PDA definition. The simulation steps below are the part that changes for each input string.
             </div>
           </div>
 
@@ -437,32 +413,59 @@
       </section>
 
       <section class="right-grid">
-        <div class="panel">
-          <div class="panel-header">2. Graph</div>
-          <div class="panel-body graph-area">
-            <svg id="graphSvg" viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <marker id="arrowHead" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#93c5fd"></path>
-                </marker>
-              </defs>
-            </svg>
+        <div class="stack">
+          <div class="panel">
+            <div class="panel-header">2. Graph</div>
+            <div class="panel-body graph-area">
+              <svg id="graphSvg" viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <marker id="arrowHead" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#93c5fd"></path>
+                  </marker>
+                </defs>
+              </svg>
 
-            <div class="legend">
-              <span class="normal">Normal state</span>
-              <span class="start">Start state</span>
-              <span class="accept">Accept state</span>
+              <div class="legend">
+                <span class="normal">Normal state</span>
+                <span class="start">Start state</span>
+                <span class="accept">Accept state</span>
+              </div>
+
+              <div class="hint">
+                Original graph style restored.
+              </div>
             </div>
+          </div>
 
-            <div class="hint">
-              This graph is drawn directly with SVG.
+          <div class="panel">
+            <div class="panel-header">3. Simulation Steps</div>
+            <div class="panel-body">
+              <div class="table-wrap">
+                <table class="trace-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>From</th>
+                      <th>To</th>
+                      <th>Consumed</th>
+                      <th>Stack Before</th>
+                      <th>Stack After</th>
+                    </tr>
+                  </thead>
+                  <tbody id="traceTableBody">
+                    <tr>
+                      <td colspan="6" class="empty-state">Run a simulation to see the steps for the current string.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
 
         <div class="stack">
           <div class="panel">
-            <div class="panel-header">3. Simulation</div>
+            <div class="panel-header">4. Simulation</div>
             <div class="panel-body">
               <div class="field">
                 <label for="inputString">Input String</label>
@@ -480,7 +483,7 @@
           </div>
 
           <div class="panel">
-            <div class="panel-header">4. Result</div>
+            <div class="panel-header">5. Result</div>
             <div class="panel-body">
               <div id="resultBox" class="result-box">
                 <div class="status">Ready</div>
@@ -499,6 +502,9 @@
     const graphSvg = document.getElementById("graphSvg");
     const resultBox = document.getElementById("resultBox");
     const messageBox = document.getElementById("message");
+    const traceTableBody = document.getElementById("traceTableBody");
+
+    let currentPDA = null;
 
     function normalizeSymbol(value) {
       if (value === null || value === undefined) return "";
@@ -559,11 +565,13 @@
 
       row.querySelector("button").addEventListener("click", function () {
         row.remove();
+        syncCurrentPDAFromForm();
       });
 
       row.querySelectorAll("input").forEach(function (input) {
         input.addEventListener("input", function () {
           updateTransitionPreview(row);
+          syncCurrentPDAFromForm();
         });
       });
 
@@ -620,7 +628,11 @@
       });
     }
 
-    function setResult(state, details, trace, extraMessage) {
+    function syncCurrentPDAFromForm() {
+      currentPDA = getPDAFromForm();
+    }
+
+    function setResult(state, details, extraMessage) {
       resultBox.className = "result-box";
 
       let title = "Ready";
@@ -636,24 +648,57 @@
         titleClass = "rejected";
       }
 
-      const safeDetails = details || "No additional details.";
-      const safeTrace = Array.isArray(trace) ? trace : [];
-      const safeMessage = extraMessage || "";
-
-      let html =
+      resultBox.innerHTML =
         '<div class="status ' + titleClass + '">' + escapeHtml(title) + "</div>" +
-        '<div class="small">' + escapeHtml(safeDetails) + "</div>";
+        '<div class="small">' + escapeHtml(details || "No additional details.") + "</div>";
 
-      if (safeTrace.length > 0) {
-        html += '<div class="trace">';
-        safeTrace.forEach(function (step) {
-          html += '<span class="trace-step">' + escapeHtml(step) + "</span>";
-        });
-        html += "</div>";
+      messageBox.textContent = extraMessage || "";
+    }
+
+    function renderTraceTable(trace) {
+      traceTableBody.innerHTML = "";
+
+      if (!Array.isArray(trace) || trace.length === 0) {
+        traceTableBody.innerHTML =
+          '<tr><td colspan="6" class="empty-state">No step-by-step trace was returned for this simulation.</td></tr>';
+        return;
       }
 
-      resultBox.innerHTML = html;
-      messageBox.textContent = safeMessage;
+      trace.forEach(function (step, index) {
+        let obj = step;
+
+        if (typeof step === "string") {
+          try {
+            obj = JSON.parse(step);
+          } catch (e) {
+            obj = { raw: step };
+          }
+        }
+
+        const tr = document.createElement("tr");
+
+        if (obj.raw) {
+          tr.innerHTML =
+            "<td>" + (index + 1) + "</td>" +
+            '<td colspan="5" class="mono">' + escapeHtml(obj.raw) + "</td>";
+        } else {
+          const fromState = obj.from_state || "?";
+          const toState = obj.to_state || "?";
+          const consumed = displaySymbol(obj.consumed);
+          const stackBefore = Array.isArray(obj.stack_before) ? obj.stack_before.join(", ") : String(obj.stack_before || "");
+          const stackAfter = Array.isArray(obj.stack_after) ? obj.stack_after.join(", ") : String(obj.stack_after || "");
+
+          tr.innerHTML =
+            "<td>" + (index + 1) + "</td>" +
+            "<td>" + escapeHtml(fromState) + "</td>" +
+            "<td>" + escapeHtml(toState) + "</td>" +
+            "<td>" + escapeHtml(consumed) + "</td>" +
+            '<td class="mono">' + escapeHtml(stackBefore) + "</td>" +
+            '<td class="mono">' + escapeHtml(stackAfter) + "</td>";
+        }
+
+        traceTableBody.appendChild(tr);
+      });
     }
 
     async function postJson(path, payload) {
@@ -706,8 +751,78 @@
       }
 
       setPDAForm(data.pda);
+      syncCurrentPDAFromForm();
       await renderGraph();
-      setResult("ready", 'Sample "' + name + '" loaded successfully.', [], "");
+      renderTraceTable([]);
+      setResult("ready", 'Sample "' + name + '" loaded successfully.', "");
+    }
+
+    function createSvgElement(name, attributes) {
+      const element = document.createElementNS("http://www.w3.org/2000/svg", name);
+
+      Object.keys(attributes || {}).forEach(function (key) {
+        element.setAttribute(key, attributes[key]);
+      });
+
+      return element;
+    }
+
+    function buildEdgeGroups(edges) {
+      const groups = new Map();
+
+      edges.forEach(function (edge) {
+        const key = edge.from + "->" + edge.to;
+        if (!groups.has(key)) {
+          groups.set(key, []);
+        }
+        groups.get(key).push(edge);
+      });
+
+      return groups;
+    }
+
+    function getCenteredOffset(index, total, spacing) {
+      return (index - (total - 1) / 2) * spacing;
+    }
+
+    function drawEdgeLabel(x, y, textValue) {
+      const lines = Array.isArray(textValue) ? textValue : [textValue];
+      const group = createSvgElement("g", {});
+      const labelText = createSvgElement("text", {
+        x: x,
+        y: y,
+        fill: "#f8fafc",
+        "font-size": "12",
+        "font-weight": "700",
+        "text-anchor": "middle",
+        "dominant-baseline": "middle"
+      });
+
+      lines.forEach(function (line, index) {
+        const tspan = createSvgElement("tspan", {
+          x: x,
+          dy: index === 0 ? "0" : "1.2em"
+        });
+        tspan.textContent = line;
+        labelText.appendChild(tspan);
+      });
+
+      group.appendChild(labelText);
+      graphSvg.appendChild(group);
+
+      const box = labelText.getBBox();
+      const background = createSvgElement("rect", {
+        x: box.x - 6,
+        y: box.y - 3,
+        width: box.width + 12,
+        height: box.height + 6,
+        rx: 6,
+        fill: "rgba(2, 6, 23, 0.94)",
+        stroke: "rgba(148, 163, 184, 0.28)",
+        "stroke-width": "1"
+      });
+
+      group.insertBefore(background, labelText);
     }
 
     function drawGraph(graph) {
@@ -728,7 +843,9 @@
       const cx = 450;
       const cy = 270;
       const radius = Math.min(200, 70 + nodes.length * 18);
+      const nodeRadius = 28;
       const positions = {};
+      const edgeGroups = buildEdgeGroups(edges);
 
       nodes.forEach(function (node, index) {
         const angle = (Math.PI * 2 * index / nodes.length) - Math.PI / 2;
@@ -738,34 +855,31 @@
         };
       });
 
-      edges.forEach(function (edge, index) {
-        const from = positions[edge.from];
-        const to = positions[edge.to];
+      edgeGroups.forEach(function (groupEdges, groupKey) {
+        const firstEdge = groupEdges[0];
+        const from = positions[firstEdge.from];
+        const to = positions[firstEdge.to];
         if (!from || !to) return;
 
-        const labelText = String(edge.label || "").replace(/epsilon/gi, "ε");
+        const labelLines = groupEdges.map(function (edge) {
+          return String(edge.label || "").replace(/epsilon/gi, "ε");
+        });
 
-        if (edge.from === edge.to) {
-          const loop = document.createElementNS("http://www.w3.org/2000/svg", "path");
-          const d = "M " + from.x + " " + (from.y - 34) +
-                    " C " + (from.x + 42) + " " + (from.y - 88) +
-                    ", " + (from.x - 42) + " " + (from.y - 88) +
-                    ", " + from.x + " " + (from.y - 34);
+        if (firstEdge.from === firstEdge.to) {
+          const loop = createSvgElement("path", {
+            d:
+              "M " + from.x + " " + (from.y - nodeRadius - 6) +
+              " C " + (from.x + 42) + " " + (from.y - 88) +
+              ", " + (from.x - 42) + " " + (from.y - 88) +
+              ", " + from.x + " " + (from.y - nodeRadius - 6),
+            fill: "none",
+            stroke: "#93c5fd",
+            "stroke-width": "2",
+            "marker-end": "url(#arrowHead)"
+          });
 
-          loop.setAttribute("d", d);
-          loop.setAttribute("fill", "none");
-          loop.setAttribute("stroke", "#93c5fd");
-          loop.setAttribute("stroke-width", "2");
           graphSvg.appendChild(loop);
-
-          const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-          label.setAttribute("x", from.x);
-          label.setAttribute("y", from.y - 92);
-          label.setAttribute("fill", "#e2e8f0");
-          label.setAttribute("font-size", "12");
-          label.setAttribute("text-anchor", "middle");
-          label.textContent = labelText;
-          graphSvg.appendChild(label);
+          drawEdgeLabel(from.x, from.y - 108, labelLines);
           return;
         }
 
@@ -774,35 +888,36 @@
         const distance = Math.hypot(dx, dy) || 1;
         const nx = dx / distance;
         const ny = dy / distance;
-        const startX = from.x + nx * 30;
-        const startY = from.y + ny * 30;
-        const endX = to.x - nx * 30;
-        const endY = to.y - ny * 30;
-
-        const curveOffset = (index % 2 === 0) ? 18 : -18;
-        const mx = (startX + endX) / 2;
-        const my = (startY + endY) / 2;
+        const startX = from.x + nx * (nodeRadius + 2);
+        const startY = from.y + ny * (nodeRadius + 2);
+        const endX = to.x - nx * (nodeRadius + 2);
+        const endY = to.y - ny * (nodeRadius + 2);
         const perpX = -ny;
         const perpY = nx;
+        const mx = (startX + endX) / 2;
+        const my = (startY + endY) / 2;
+        const reverseKey = firstEdge.to + "->" + firstEdge.from;
+        const hasReverse = edgeGroups.has(reverseKey) && reverseKey !== groupKey;
+        const curveOffset = hasReverse ? 18 : 0;
         const cx1 = mx + perpX * curveOffset;
         const cy1 = my + perpY * curveOffset;
 
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path.setAttribute("d", "M " + startX + " " + startY + " Q " + cx1 + " " + cy1 + " " + endX + " " + endY);
-        path.setAttribute("fill", "none");
-        path.setAttribute("stroke", "#93c5fd");
-        path.setAttribute("stroke-width", "2");
-        path.setAttribute("marker-end", "url(#arrowHead)");
+        const path = createSvgElement("path", {
+          d: "M " + startX + " " + startY + " Q " + cx1 + " " + cy1 + " " + endX + " " + endY,
+          fill: "none",
+          stroke: "#93c5fd",
+          "stroke-width": "2",
+          "marker-end": "url(#arrowHead)"
+        });
+
         graphSvg.appendChild(path);
 
-        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        label.setAttribute("x", cx1);
-        label.setAttribute("y", cy1 - 8);
-        label.setAttribute("fill", "#e2e8f0");
-        label.setAttribute("font-size", "12");
-        label.setAttribute("text-anchor", "middle");
-        label.textContent = labelText;
-        graphSvg.appendChild(label);
+        const labelOffset = curveOffset === 0 ? -16 : curveOffset + 14;
+        drawEdgeLabel(
+          mx + perpX * labelOffset,
+          my + perpY * labelOffset - 4,
+          labelLines
+        );
       });
 
       nodes.forEach(function (node) {
@@ -857,55 +972,58 @@
 
     async function renderGraph() {
       try {
-        const pda = getPDAFromForm();
-        const graph = await postJson("/render-graph", { pda: pda });
+        syncCurrentPDAFromForm();
+
+        if (!currentPDA) {
+          setResult("rejected", "No PDA is currently loaded.", "");
+          return;
+        }
+
+        const graph = await postJson("/render-graph", { pda: currentPDA });
         drawGraph(graph);
-        setResult("ready", "Graph rendered successfully.", [], "");
+        setResult("ready", "Graph rendered successfully.", "");
       } catch (error) {
-        setResult("rejected", "Could not render the graph.", [], error.message);
+        setResult("rejected", "Could not render the graph.", error.message);
       }
     }
 
     async function simulatePDA() {
       try {
-        const pda = getPDAFromForm();
+        syncCurrentPDAFromForm();
+
+        if (!currentPDA) {
+          setResult("rejected", "No PDA is currently loaded.", "");
+          renderTraceTable([]);
+          return;
+        }
+
         const inputString = document.getElementById("inputString").value;
 
         const data = await postJson("/simulate", {
-          pda: pda,
+          pda: currentPDA,
           input_string: inputString
         });
 
         const accepted = Boolean(data.accepted);
-        let trace = [];
+        const trace = Array.isArray(data.trace)
+          ? data.trace
+          : (Array.isArray(data.steps) ? data.steps : (Array.isArray(data.formatted_trace) ? data.formatted_trace : []));
 
-        if (Array.isArray(data.formatted_trace)) {
-          trace = data.formatted_trace.map(function (step) {
-            return (typeof step === "string") ? step : JSON.stringify(step);
-          });
-        } else if (Array.isArray(data.trace)) {
-          trace = data.trace.map(function (step) {
-            return (typeof step === "string") ? step : JSON.stringify(step);
-          });
-        } else if (Array.isArray(data.steps)) {
-          trace = data.steps.map(function (step) {
-            return (typeof step === "string") ? step : JSON.stringify(step);
-          });
-        }
+        renderTraceTable(trace);
 
         setResult(
           accepted ? "accepted" : "rejected",
           accepted ? "The backend accepted the input string." : "The backend rejected the input string.",
-          trace,
           data.error || ""
         );
       } catch (error) {
-        setResult("rejected", "Simulation failed.", [], error.message);
+        renderTraceTable([]);
+        setResult("rejected", "Simulation failed.", error.message);
       }
     }
 
     function fillQuickExample() {
-      setPDAForm({
+      const pda = {
         states: ["q0", "q1"],
         input_alphabet: ["(", ")"],
         stack_alphabet: ["Z", "("],
@@ -918,20 +1036,32 @@
           { current_state: "q0", input_symbol: ")", stack_top: "(", next_state: "q0", stack_push: "" },
           { current_state: "q0", input_symbol: "", stack_top: "Z", next_state: "q1", stack_push: "Z" }
         ]
-      });
+      };
 
+      setPDAForm(pda);
+      syncCurrentPDAFromForm();
       document.getElementById("inputString").value = "(())(())";
+      renderTraceTable([]);
       renderGraph();
-      setResult("ready", "Quick example loaded.", [], "");
+      setResult("ready", "Quick example loaded.", "");
     }
 
     document.getElementById("addTransitionBtn").addEventListener("click", function () {
       createTransitionRow({});
+      syncCurrentPDAFromForm();
     });
 
     document.getElementById("clearTransitionsBtn").addEventListener("click", function () {
       transitionBody.innerHTML = "";
+      syncCurrentPDAFromForm();
     });
+
+    document.getElementById("states").addEventListener("input", syncCurrentPDAFromForm);
+    document.getElementById("inputAlphabet").addEventListener("input", syncCurrentPDAFromForm);
+    document.getElementById("stackAlphabet").addEventListener("input", syncCurrentPDAFromForm);
+    document.getElementById("startState").addEventListener("input", syncCurrentPDAFromForm);
+    document.getElementById("startStack").addEventListener("input", syncCurrentPDAFromForm);
+    document.getElementById("acceptStates").addEventListener("input", syncCurrentPDAFromForm);
 
     document.getElementById("renderBtn").addEventListener("click", renderGraph);
     document.getElementById("simulateBtn").addEventListener("click", simulatePDA);
@@ -951,7 +1081,8 @@
     createTransitionRow({ current_state: "q0", input_symbol: ")", stack_top: "(", next_state: "q0", stack_push: "" });
     createTransitionRow({ current_state: "q0", input_symbol: "", stack_top: "Z", next_state: "q1", stack_push: "Z" });
 
-    drawGraph({ nodes: [], edges: [] });
+    syncCurrentPDAFromForm();
+    renderTraceTable([]);
   </script>
 </body>
 </html>
